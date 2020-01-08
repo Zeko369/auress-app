@@ -1,10 +1,8 @@
 import React, {useEffect} from 'react';
 import {SafeAreaView, View, Text} from 'react-native';
 
-import axios from 'axios';
-
 import CookieManager from 'react-native-cookie-store';
-import RequestService from './services/requestService';
+import {connect} from './foobar';
 
 const URL = 'https://auress.org/s/';
 
@@ -22,35 +20,13 @@ const run = () => {
 
 const App = () => {
   useEffect(() => {
-    // await clearCookies();
+    console.log('BEGIN: ----------------');
 
-    const roomId = 2013;
-
-    axios
-      .get(URL)
-      .then(() => CookieManager.get(URL))
+    connect(6387)
       .then(data => {
         console.log(data);
-
-        const postService = new RequestService();
-        const loginData = `idSobe=${roomId}&udiUSobu=Start%0D%0A`;
-        // await clearCookies();
-        return postService.post(loginData);
       })
-      .then(data => {
-        console.log(data.request);
-      });
-
-    // // console.log(loginResponse.data);
-
-    // return {};
-
-    // const config = extractConfig(loginResponse.data);
-
-    // return {
-    //   cookie,
-    //   config,
-    // };
+      .catch(e => console.error(e));
   });
 
   return (
