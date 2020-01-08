@@ -11,6 +11,7 @@ import {
 import axios from "axios";
 
 import Login from "./screens/Login";
+import Main from "./screens/NewTesting";
 
 const URL = "https://www.auress.org/s";
 
@@ -195,4 +196,6 @@ const App = () => {
   );
 };
 
-export default App;
+// export default App;
+
+export default Main;
