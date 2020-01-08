@@ -1,6 +1,6 @@
 import axios from 'axios';
 // import CookieManager from 'react-native-cookie-store';
-import {extractConfig} from './services/parsers';
+import {extractConfig} from './parser';
 
 const URL = 'https://auress.org/s/';
 
