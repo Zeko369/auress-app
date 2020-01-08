@@ -7,7 +7,7 @@ const URL = 'https://auress.org/s/';
 const headers = {
   'Content-Type': 'application/x-www-form-urlencoded',
   'User-Agent':
-    'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:71.0) Gecko/20100101 Firefox/71.0',
+    'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:71.0) Gecko/20100101 Firefox/71.0'
 };
 
 const post = async (body: string) => {
@@ -15,7 +15,7 @@ const post = async (body: string) => {
     method: 'POST',
     body,
     credentials: 'include',
-    headers,
+    headers
   });
 };
 
@@ -34,7 +34,7 @@ export const connect = async (roomId: number) => {
 
     return {
       status: 'Created new login',
-      config: extractConfig(html),
+      config: extractConfig(html)
     };
   }
 };

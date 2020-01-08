@@ -16,7 +16,7 @@ const extractConfig = (html: string): Config => {
 
   return {
     id,
-    questionCount,
+    questionCount
   };
 };
 

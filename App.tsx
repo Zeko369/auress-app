@@ -6,7 +6,7 @@ import {
   TouchableOpacity,
   GestureResponderEvent,
   TextInput,
-  ScrollView,
+  ScrollView
 } from 'react-native';
 
 import CookieManager from 'react-native-cookie-store';
@@ -102,7 +102,7 @@ const App = () => {
 
             <View style={{flexDirection: 'column'}}>
               {Array.from(new Array(config.questionCount), (_, i) =>
-                String.fromCharCode(65 + i),
+                String.fromCharCode(65 + i)
               ).map(item => (
                 <TouchableOpacity
                   onPress={onPress(item)}
@@ -110,7 +110,7 @@ const App = () => {
                   style={{
                     padding: 10,
                     margin: 10,
-                    backgroundColor: '#adadad',
+                    backgroundColor: '#adadad'
                   }}>
                   <Text>{submitting ? 'Loading' : item}</Text>
                 </TouchableOpacity>
@@ -124,7 +124,7 @@ const App = () => {
                 style={{
                   borderColor: 'red',
                   borderWidth: 1,
-                  borderStyle: 'solid',
+                  borderStyle: 'solid'
                 }}
               />
               <TouchableOpacity

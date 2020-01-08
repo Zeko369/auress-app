@@ -24,7 +24,7 @@ const extractData = (html: string): Config => {
 
   return {
     id,
-    questions,
+    questions
   };
 };
 
@@ -35,8 +35,8 @@ const postService = async (data: string, cookie: string) => {
       'Content-Type': 'application/x-www-form-urlencoded',
       credentials: 'include',
       'User-Agent':
-        'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:71.0) Gecko/20100101 Firefox/71.0',
-    },
+        'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:71.0) Gecko/20100101 Firefox/71.0'
+    }
   });
 };
 
