@@ -62,6 +62,11 @@ const App = () => {
 
   const onPress = (item: string) => (event: GestureResponderEvent): void => {
     setSubmitting(true);
+
+    if (submitting) {
+      return;
+    }
+
     sendShort(item)
       .then(data => {
         setSubmitting(false);
@@ -107,7 +112,7 @@ const App = () => {
                     margin: 10,
                     backgroundColor: '#adadad',
                   }}>
-                  <Text>{item}</Text>
+                  <Text>{submitting ? 'Loading' : item}</Text>
                 </TouchableOpacity>
               ))}
             </View>
