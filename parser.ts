@@ -20,4 +20,20 @@ const extractConfig = (html: string): Config => {
   };
 };
 
-export {extractConfig, Config};
+const extractMyAns = (html: string): string => {
+  return html
+    .split('Answers')[1]
+    .split('</div>')[0]
+    .slice(3);
+  // .split('), ');
+};
+
+const extractMyText = (html: string): string => {
+  return html
+    .split('Messages')[1]
+    .split('</div>')[0]
+    .slice(3);
+  // .split('), ');
+};
+
+export {extractConfig, Config, extractMyAns, extractMyText};

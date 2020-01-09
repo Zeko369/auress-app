@@ -12,7 +12,7 @@ import {
 
 import CookieManager from 'react-native-cookie-store';
 import {connect, sendShort, sendText} from './foobar';
-import {extractConfig} from './parser';
+import {extractConfig, extractMyAns, extractMyText} from './parser';
 
 // const URL = 'https://auress.org/s/';
 
@@ -28,33 +28,17 @@ import {extractConfig} from './parser';
 //   });
 // };
 
-const extractMyAns = (html: string): string[] => {
-  return html
-    .split('Answers')[1]
-    .split('</div>')[0]
-    .slice(3)
-    .split('), ');
-};
-
-const extractMyText = (html: string): string[] => {
-  return html
-    .split('Messages')[1]
-    .split('</div>')[0]
-    .slice(3)
-    .split('), ');
-};
-
 const App = () => {
   const [loggedIn, setLoggedIn] = useState(false);
   const [config, setConfig] = useState({id: 1, questionCount: 5});
   const [error, setError] = useState(false);
   const [text, setText] = useState('');
-  const [myText, setmyText] = useState<string[]>([]);
+  const [myText, setmyText] = useState<string>('');
   const [submitting, setSubmitting] = useState(false);
 
   const ref = useRef<ScrollView | null>(null);
 
-  const [myAnswers, setMyAnswers] = useState<string[]>([]);
+  const [myAnswers, setMyAnswers] = useState<string>('');
 
   useEffect(() => {
     console.log('BEGIN: ----------------');
@@ -71,6 +55,12 @@ const App = () => {
       });
   }, []);
 
+  const updateData = (html: string) => {
+    setMyAnswers(extractMyAns(html));
+    setmyText(extractMyText(html));
+    setConfig(extractConfig(html));
+  };
+
   const onPress = (item: string) => (event: GestureResponderEvent): void => {
     setSubmitting(true);
 
@@ -80,23 +70,23 @@ const App = () => {
 
     sendShort(item)
       .then(html => {
+        updateData(html);
         setSubmitting(false);
-
-        console.log(html);
-
-        setMyAnswers(extractMyAns(html));
-        setConfig(extractConfig(html));
         setTimeout(() => ref.current?.scrollToEnd(), 20);
       })
       .catch(e => console.error(e));
   };
 
   const onSubmit = () => {
+    if (text === '') {
+      return;
+    }
+
     Keyboard.dismiss();
+    setText('');
     sendText(text)
       .then(html => {
-        setmyText(extractMyText(html));
-        setText('');
+        updateData(html);
         setTimeout(() => ref.current?.scrollToEnd(), 20);
       })
       .catch(e => console.error(e));
@@ -149,12 +139,8 @@ const App = () => {
             </View>
 
             <ScrollView ref={ref}>
-              {myAnswers.map((item, index) => (
-                <Text key={`ans-${item}-${index}`}>{item})</Text>
-              ))}
-              {myText.map((item, index) => (
-                <Text key={`ans-${item}-${index}`}>{item})</Text>
-              ))}
+              <Text>{myAnswers}</Text>
+              <Text>{myText}</Text>
             </ScrollView>
           </View>
         ) : (
