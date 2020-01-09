@@ -11,7 +11,7 @@ import {
 } from 'react-native';
 
 import CookieManager from 'react-native-cookie-store';
-import {connect, sendShort, sendText, login} from './foobar';
+import {connect, sendShort, sendText, login, logout} from './foobar';
 import {extractConfig, extractMyAns, extractMyText} from './parser';
 
 // const URL = 'https://auress.org/s/';
@@ -29,6 +29,7 @@ import {extractConfig, extractMyAns, extractMyText} from './parser';
 // };
 
 const App = () => {
+  const [userId, setUserId] = useState('');
   const [username, setUsername] = useState('');
   const [loggedIn, setLoggedIn] = useState(false);
   const [config, setConfig] = useState({id: 1, questionCount: 5});
@@ -45,13 +46,13 @@ const App = () => {
     console.log('BEGIN: ----------------');
 
     CookieManager.clearAll().then(() => {
-      connect(8671)
+      connect(2222)
         .then(data => {
           console.log(data);
           setConfig(data.config);
           setLoggedIn(true);
 
-          return login('0036524344');
+          return login(userId);
         })
         .then(data => {
           console.log('Logged flow done:', data);
@@ -62,7 +63,7 @@ const App = () => {
           console.error(e);
         });
     });
-  }, []);
+  }, [userId]);
 
   const updateData = (html: string) => {
     setMyAnswers(extractMyAns(html));
@@ -110,6 +111,19 @@ const App = () => {
           <View style={{height: '100%'}}>
             <Text>Hello {username}</Text>
             <Text>Youre in room: {config.id}</Text>
+
+            <TouchableOpacity
+              style={{backgroundColor: 'red', padding: 20}}
+              onPress={() => {
+                logout()
+                  .then(() => {
+                    console.log('Logged out');
+                    setUserId('');
+                  })
+                  .catch(e => console.log(e));
+              }}>
+              <Text>Logout</Text>
+            </TouchableOpacity>
 
             {submitting ? <Text>Loading...</Text> : <Text>Go...</Text>}
 

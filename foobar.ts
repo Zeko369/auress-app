@@ -1,5 +1,5 @@
 import axios from 'axios';
-// import CookieManager from 'react-native-cookie-store';
+import CookieManager from 'react-native-cookie-store';
 import {extractConfig} from './parser';
 
 const URL = 'https://auress.org/s/';
@@ -55,4 +55,8 @@ export const login = async (id: string) => {
 
   const username = query && query[0].split('(')[1];
   return username;
+};
+
+export const logout = async () => {
+  return axios.get(`${URL}logout.php`).then(() => CookieManager.clearAll());
 };
