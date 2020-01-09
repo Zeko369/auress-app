@@ -5,6 +5,7 @@ import {HomeScreen, AnsweringScreen} from './screens';
 import Header, {HeaderProps} from './components/Header';
 import AsyncStorage from '@react-native-community/async-storage';
 import {connect, login, logout} from './foobar';
+import {parse} from './parser';
 
 enum PAGE {
   HOME,
@@ -18,6 +19,8 @@ const Main: React.FC = () => {
   const [page, setPage] = useState<PAGE>(PAGE.HOME);
   const [roomId, setRoomId] = useState<number>(2222);
 
+  const [config, setConfig] = useState<any>({});
+
   useEffect(() => {
     AsyncStorage.getItem('userId').then(data => {
       if (data) {
@@ -30,8 +33,12 @@ const Main: React.FC = () => {
     setRoomId(room);
     setConnecting(true);
     setPage(PAGE.ANSWER);
-    connect(roomId)
+    logout()
       .then(() => {
+        return connect(room);
+      })
+      .then(data => {
+        setConfig(parse(data.raw));
         setConnecting(false);
         if (userId) {
           return login(userId);
@@ -99,9 +106,9 @@ const Main: React.FC = () => {
           <HomeScreen callback={callback} />
         ) : page === PAGE.ANSWER ? (
           <AnsweringScreen
-            roomId={roomId}
-            userId={userId}
             connecting={connecting}
+            config={config}
+            setConfig={setConfig}
           />
         ) : (
           <View>
