@@ -9,6 +9,7 @@ import {
 } from 'react-native';
 
 import AnswerButton from '../components/AnswerButton';
+import FormInput from '../components/FormInput';
 import {sendText, sendShort} from '../foobar';
 import {parse} from '../parser';
 
@@ -65,7 +66,7 @@ const AnsweringScreen: React.FC<AnsweringScreenProps> = ({
     });
 
     buttonsJSX.push(
-      <View style={{flexDirection: 'row'}}>
+      <View style={{flexDirection: 'row'}} key={`row-${i}`}>
         <AnswerButton {...props(String.fromCharCode(65 + i))} />
         {i !== 6 ? (
           <AnswerButton {...props(String.fromCharCode(65 + i + 1))} />
@@ -102,37 +103,14 @@ const AnsweringScreen: React.FC<AnsweringScreenProps> = ({
   return (
     <View>
       <View style={{flexDirection: 'column'}}>{buttonsJSX}</View>
-      <View style={{flexDirection: 'row'}}>
-        <TextInput
-          value={text}
-          onChangeText={t => setText(t)}
-          style={{
-            flex: 3,
-            margin: 10,
-            color: 'white',
-            fontSize: 20,
-            borderColor: 'red',
-            borderWidth: 1,
-            borderStyle: 'solid'
-          }}
-          returnKeyType={'done'}
-        />
-        <TouchableOpacity
-          style={{
-            padding: 10,
-            flex: 1,
-            backgroundColor: 'purple',
-            margin: 10,
-            justifyContent: 'center',
-            alignItems: 'center',
-            borderRadius: 5
-          }}
-          onPress={onSubmit}>
-          <Text style={{color: 'white', fontSize: 15, fontWeight: '800'}}>
-            Send
-          </Text>
-        </TouchableOpacity>
-      </View>
+      <FormInput
+        setText={setText}
+        text={text}
+        onSubmit={onSubmit}
+        returnType={'done'}
+        type="default"
+        label="send"
+      />
 
       <View style={{margin: 10}}>
         <Text style={{color: 'white', fontSize: 15}}>

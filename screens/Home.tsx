@@ -2,6 +2,7 @@ import React, {useState, useEffect} from 'react';
 import {View, Text, TouchableOpacity, TextInput, Alert} from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
 import Header from '../components/Header';
+import FormInput from '../components/FormInput';
 
 interface HomeScreenProps {
   callback: (room: number) => void;
@@ -50,31 +51,14 @@ const HomeScreen: React.FC<HomeScreenProps> = ({callback}) => {
 
   return (
     <View>
-      <Text>Join room</Text>
-      <TextInput
-        value={roomId}
-        onChangeText={(text: string) => {
-          setRoomId(text);
-          console.log(text);
-        }}
-        style={{
-          padding: 10,
-          fontSize: 20,
-          borderColor: 'red',
-          borderWidth: 1,
-          borderStyle: 'solid'
-        }}
-        returnKeyType={'go'}
-        keyboardType={'numeric'}
-        onSubmitEditing={submit()}
+      <FormInput
+        text={roomId}
+        setText={setRoomId}
+        onSubmit={submit()}
+        type="numeric"
+        label="Join room"
+        returnType="go"
       />
-      <TouchableOpacity
-        onPress={submit()}
-        style={{padding: 20, backgroundColor: 'blue'}}>
-        <Text style={{color: 'white', fontSize: 15, fontWeight: '800'}}>
-          Join room
-        </Text>
-      </TouchableOpacity>
 
       {rooms.map((room: Room) => (
         <View
