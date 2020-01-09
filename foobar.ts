@@ -25,7 +25,11 @@ export const connect = async (roomId: number) => {
 
   if (setCookie === undefined) {
     const body = initResponse.data;
-    return {status: 'Already Logged in', config: extractConfig(body)};
+    return {
+      status: 'Already Logged in',
+      raw: body,
+      config: extractConfig(body)
+    };
   } else {
     const loginData = `idSobe=${roomId}&udiUSobu=Start%0D%0A`;
 
@@ -34,6 +38,7 @@ export const connect = async (roomId: number) => {
 
     return {
       status: 'Created new login',
+      raw: html,
       config: extractConfig(html)
     };
   }
