@@ -3,19 +3,23 @@ import {SafeAreaView, View, Text, TouchableOpacity} from 'react-native';
 
 interface AnsweringScreenProps {
   roomId: number;
-  goBack: () => void;
+  userId: string | null;
+  connecting: boolean;
 }
 
-const AnsweringScreen: React.FC<AnsweringScreenProps> = ({roomId, goBack}) => {
+const AnsweringScreen: React.FC<AnsweringScreenProps> = ({
+  roomId,
+  userId,
+  connecting
+}) => {
   return (
-    <SafeAreaView>
-      <View>
-        <Text>Room: {roomId}</Text>
-        <TouchableOpacity onPress={goBack} style={{backgroundColor: 'navy'}}>
-          <Text>Go back</Text>
-        </TouchableOpacity>
-      </View>
-    </SafeAreaView>
+    <View>
+      {connecting ? (
+        <Text style={{color: 'white'}}>Loading...</Text>
+      ) : (
+        <Text>Text</Text>
+      )}
+    </View>
   );
 };
 

@@ -1,14 +1,45 @@
 import React from 'react';
 import {View, Text, StyleSheet, TouchableOpacity} from 'react-native';
 
-interface HeaderProps {
+export interface HeaderProps {
   text: string;
   textCallback: () => void;
   user: string;
+  showCallback: boolean;
   callbackText: string;
   userCallback: () => void;
   showRight: boolean;
 }
+
+const Header: React.FC<HeaderProps> = ({
+  text,
+  textCallback,
+  user,
+  callbackText,
+  userCallback,
+  showRight,
+  showCallback
+}) => {
+  return (
+    <View style={styles.container}>
+      <TouchableOpacity onPress={textCallback}>
+        <Text style={styles.text}>{text}</Text>
+      </TouchableOpacity>
+      {showRight && (
+        <View style={styles.right}>
+          <Text style={styles.rightText}>{user}</Text>
+          {showCallback && (
+            <TouchableOpacity onPress={userCallback} style={styles.button}>
+              <Text>{callbackText}</Text>
+            </TouchableOpacity>
+          )}
+        </View>
+      )}
+    </View>
+  );
+};
+
+export default Header;
 
 const styles = StyleSheet.create({
   container: {
@@ -19,9 +50,6 @@ const styles = StyleSheet.create({
     paddingLeft: 16,
     borderBottomColor: 'white',
     borderBottomWidth: 2
-  },
-  buttonLeft: {
-    width: 100
   },
   text: {
     fontSize: 30,
@@ -46,30 +74,3 @@ const styles = StyleSheet.create({
     color: 'white'
   }
 });
-
-const Header: React.FC<HeaderProps> = ({
-  text,
-  textCallback,
-  user,
-  callbackText,
-  userCallback,
-  showRight
-}) => {
-  return (
-    <View style={styles.container}>
-      <TouchableOpacity onPress={textCallback} style={styles.buttonLeft}>
-        <Text style={styles.text}>{text}</Text>
-      </TouchableOpacity>
-      {showRight && (
-        <View style={styles.right}>
-          <Text style={styles.rightText}>{user}</Text>
-          <TouchableOpacity onPress={userCallback} style={styles.button}>
-            <Text>{callbackText}</Text>
-          </TouchableOpacity>
-        </View>
-      )}
-    </View>
-  );
-};
-
-export default Header;
