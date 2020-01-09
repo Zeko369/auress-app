@@ -36,4 +36,12 @@ const extractMyText = (html: string): string => {
   // .split('), ');
 };
 
-export {extractConfig, Config, extractMyAns, extractMyText};
+const parse = (html: string) => {
+  return {
+    config: extractConfig(html),
+    ans: extractMyAns(html),
+    text: extractMyText(html)
+  };
+};
+
+export {parse, extractConfig, Config, extractMyAns, extractMyText};
