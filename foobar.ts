@@ -41,10 +41,10 @@ export const connect = async (roomId: number) => {
 
 export const sendShort = async (answer: string) => {
   const answerData = `odgovor=${answer.toUpperCase()}&browser=App&device=Apple`;
-  return await post(answerData);
+  return await (await post(answerData)).text();
 };
 
 export const sendText = async (text: string) => {
   const answerData = `porukaStudenta=${text}&posaljiPoruku=Send+text`;
-  return await post(answerData);
+  return await (await post(answerData)).text();
 };

@@ -6,11 +6,13 @@ import {
   TouchableOpacity,
   GestureResponderEvent,
   TextInput,
-  ScrollView
+  ScrollView,
+  Keyboard
 } from 'react-native';
 
 import CookieManager from 'react-native-cookie-store';
 import {connect, sendShort, sendText} from './foobar';
+import {extractConfig} from './parser';
 
 // const URL = 'https://auress.org/s/';
 
@@ -26,9 +28,17 @@ import {connect, sendShort, sendText} from './foobar';
 //   });
 // };
 
-const extractMyAns = (html: string) => {
+const extractMyAns = (html: string): string[] => {
   return html
     .split('Answers')[1]
+    .split('</div>')[0]
+    .slice(3)
+    .split('), ');
+};
+
+const extractMyText = (html: string): string[] => {
+  return html
+    .split('Messages')[1]
     .split('</div>')[0]
     .slice(3)
     .split('), ');
@@ -39,6 +49,7 @@ const App = () => {
   const [config, setConfig] = useState({id: 1, questionCount: 5});
   const [error, setError] = useState(false);
   const [text, setText] = useState('');
+  const [myText, setmyText] = useState<string[]>([]);
   const [submitting, setSubmitting] = useState(false);
 
   const ref = useRef<ScrollView | null>(null);
@@ -48,7 +59,7 @@ const App = () => {
   useEffect(() => {
     console.log('BEGIN: ----------------');
 
-    connect(6387)
+    connect(8671)
       .then(data => {
         console.log(data);
         setConfig(data.config);
@@ -68,22 +79,25 @@ const App = () => {
     }
 
     sendShort(item)
-      .then(data => {
-        setSubmitting(false);
-        return data.text();
-      })
       .then(html => {
+        setSubmitting(false);
+
+        console.log(html);
+
         setMyAnswers(extractMyAns(html));
-        setTimeout(() => ref.current?.scrollToEnd(), 100);
+        setConfig(extractConfig(html));
+        setTimeout(() => ref.current?.scrollToEnd(), 20);
       })
       .catch(e => console.error(e));
   };
 
   const onSubmit = () => {
+    Keyboard.dismiss();
     sendText(text)
-      .then(() => {
-        console.log('Sent: ', text);
+      .then(html => {
+        setmyText(extractMyText(html));
         setText('');
+        setTimeout(() => ref.current?.scrollToEnd(), 20);
       })
       .catch(e => console.error(e));
   };
@@ -136,6 +150,9 @@ const App = () => {
 
             <ScrollView ref={ref}>
               {myAnswers.map((item, index) => (
+                <Text key={`ans-${item}-${index}`}>{item})</Text>
+              ))}
+              {myText.map((item, index) => (
                 <Text key={`ans-${item}-${index}`}>{item})</Text>
               ))}
             </ScrollView>
