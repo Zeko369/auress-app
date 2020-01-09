@@ -11,7 +11,7 @@ import {
 } from 'react-native';
 
 import CookieManager from 'react-native-cookie-store';
-import {connect, sendShort, sendText} from './foobar';
+import {connect, sendShort, sendText, login} from './foobar';
 import {extractConfig, extractMyAns, extractMyText} from './parser';
 
 // const URL = 'https://auress.org/s/';
@@ -29,6 +29,7 @@ import {extractConfig, extractMyAns, extractMyText} from './parser';
 // };
 
 const App = () => {
+  const [username, setUsername] = useState('');
   const [loggedIn, setLoggedIn] = useState(false);
   const [config, setConfig] = useState({id: 1, questionCount: 5});
   const [error, setError] = useState(false);
@@ -43,16 +44,24 @@ const App = () => {
   useEffect(() => {
     console.log('BEGIN: ----------------');
 
-    connect(8671)
-      .then(data => {
-        console.log(data);
-        setConfig(data.config);
-        setLoggedIn(true);
-      })
-      .catch(e => {
-        setError(e);
-        console.error(e);
-      });
+    CookieManager.clearAll().then(() => {
+      connect(8671)
+        .then(data => {
+          console.log(data);
+          setConfig(data.config);
+          setLoggedIn(true);
+
+          return login('0036524344');
+        })
+        .then(data => {
+          console.log('Logged flow done:', data);
+          setUsername(data || '');
+        })
+        .catch(e => {
+          setError(e);
+          console.error(e);
+        });
+    });
   }, []);
 
   const updateData = (html: string) => {
@@ -99,7 +108,7 @@ const App = () => {
           <Text>{error}</Text>
         ) : loggedIn ? (
           <View style={{height: '100%'}}>
-            <Text>Hello</Text>
+            <Text>Hello {username}</Text>
             <Text>Youre in room: {config.id}</Text>
 
             {submitting ? <Text>Loading...</Text> : <Text>Go...</Text>}
@@ -130,6 +139,8 @@ const App = () => {
                   borderWidth: 1,
                   borderStyle: 'solid'
                 }}
+                returnKeyType={'go'}
+                onSubmitEditing={onSubmit}
               />
               <TouchableOpacity
                 style={{padding: 10, margin: 10, backgroundColor: '#adadad'}}

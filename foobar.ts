@@ -48,3 +48,11 @@ export const sendText = async (text: string) => {
   const answerData = `porukaStudenta=${text}&posaljiPoruku=Send+text`;
   return await (await post(answerData)).text();
 };
+
+export const login = async (id: string) => {
+  const html = await sendText(`JMBAG=${id}`);
+  const query = html.match(/>Room ID: [0-9]* \(([a-z]|[A-Z]|\ )*/);
+
+  const username = query && query[0].split('(')[1];
+  return username;
+};
