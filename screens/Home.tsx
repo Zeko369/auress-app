@@ -14,7 +14,7 @@ interface Room {
 }
 
 const HomeScreen: React.FC<HomeScreenProps> = ({callback}) => {
-  const [roomId, setRoomId] = useState<string>('2222');
+  const [roomId, setRoomId] = useState<string>('');
   const [rooms, setRooms] = useState<Room[]>([]);
 
   useEffect(() => {

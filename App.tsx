@@ -17,7 +17,7 @@ const Main: React.FC = () => {
   const [username, setUsername] = useState<string | null>(null);
   const [userId, setUserId] = useState<string | null>(null);
   const [page, setPage] = useState<PAGE>(PAGE.HOME);
-  const [roomId, setRoomId] = useState<number>(2222);
+  const [roomId, setRoomId] = useState<number>();
 
   const [config, setConfig] = useState<any>({});
 
