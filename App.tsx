@@ -2,6 +2,7 @@ import React, {useState, useEffect} from 'react';
 import {SafeAreaView, View, Text} from 'react-native';
 
 import {HomeScreen, AnsweringScreen} from './screens';
+import Header from './components/Header';
 
 enum PAGE {
   HOME,
@@ -22,17 +23,27 @@ const Main: React.FC = () => {
   };
 
   return (
-    <SafeAreaView>
-      {page === PAGE.HOME ? (
-        <HomeScreen callback={callback} />
-      ) : page === PAGE.ANSWER ? (
-        <AnsweringScreen roomId={roomId} goBack={goBack} />
-      ) : (
-        <View>
-          <Text>Error</Text>
-        </View>
-      )}
-    </SafeAreaView>
+    <View style={{flex: 1, backgroundColor: '#232323'}}>
+      <SafeAreaView>
+        <Header
+          text="Auress"
+          textCallback={goBack}
+          user="Anon"
+          callbackText={'LOGIN'}
+          userCallback={() => console.log('Hello')}
+          showRight={page === PAGE.ANSWER}
+        />
+        {page === PAGE.HOME ? (
+          <HomeScreen callback={callback} />
+        ) : page === PAGE.ANSWER ? (
+          <AnsweringScreen roomId={roomId} goBack={goBack} />
+        ) : (
+          <View>
+            <Text>Error</Text>
+          </View>
+        )}
+      </SafeAreaView>
+    </View>
   );
 };
 

@@ -1,6 +1,7 @@
 import React, {useState, useEffect} from 'react';
 import {View, Text, TouchableOpacity, TextInput, Alert} from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
+import Header from '../components/Header';
 
 interface HomeScreenProps {
   callback: (room: number) => void;
