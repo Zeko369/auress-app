@@ -42,6 +42,8 @@ const Main: React.FC = () => {
         setConnecting(false);
         if (userId) {
           return login(userId);
+        } else {
+          setUsername('anonymous');
         }
       })
       .then(data => {

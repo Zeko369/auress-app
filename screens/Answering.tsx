@@ -68,7 +68,7 @@ const AnsweringScreen: React.FC<AnsweringScreenProps> = ({
     buttonsJSX.push(
       <View style={{flexDirection: 'row'}} key={`row-${i}`}>
         <AnswerButton {...props(String.fromCharCode(65 + i))} />
-        {i !== 6 ? (
+        {i % 2 === 0 && i < config.config.questionCount - 1 ? (
           <AnswerButton {...props(String.fromCharCode(65 + i + 1))} />
         ) : (
           <View
