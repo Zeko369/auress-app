@@ -33,6 +33,7 @@ const Main: React.FC = () => {
   const [text, setText] = useState('');
   const [changeRooms, setChangeRooms] = useState(false);
   const [currRoom, setCurrRoom] = useState('2222');
+  const [modal, setModal] = useState('login');
 
   useEffect(() => {
     AsyncStorage.getItem('userId').then(data => {
@@ -78,15 +79,19 @@ const Main: React.FC = () => {
   };
 
   const openLogin = () => {
-    Alert.prompt('Login', 'Enter userId', (text: string) => {
-      login(text)
-        .then(data => {
-          setUsername(data || null);
-          setUserId(text);
-          return AsyncStorage.setItem('userId', text);
-        })
-        .then(() => console.log('done'));
-    });
+    // Alert.prompt('Login', 'Enter userId', (text: string) => {
+    //   login(text)
+    //     .then(data => {
+    //       setUsername(data || null);
+    //       setUserId(text);
+    //       return AsyncStorage.setItem('userId', text);
+    //     })
+    //     .then(() => console.log('done'));
+    // });
+
+    setModalOpen(true);
+    setModal('login');
+    setText(userId || '');
   };
 
   const openLogout = () => {
@@ -121,33 +126,45 @@ const Main: React.FC = () => {
 
   const opneModal = () => {
     setModalOpen(true);
+    setModal('name');
   };
 
   const onSubmit = () => {
-    AsyncStorage.getItem('rooms').then(data => {
-      if (data) {
-        const rooms = JSON.parse(data);
-        const newData = JSON.stringify(
-          rooms.map((room: any) => {
-            if (room.id === currRoom) {
-              return {
-                id: room.id,
-                name: text
-              };
-            } else {
-              return room;
-            }
-          })
-        );
-
-        console.log(newData);
-
-        AsyncStorage.setItem('rooms', newData).then(() => {
-          setChangeRooms(!changeRooms);
+    if (modal === 'login') {
+      login(text)
+        .then(data => {
+          setUsername(data || null);
+          setUserId(text);
           setModalOpen(false);
-        });
-      }
-    });
+          return AsyncStorage.setItem('userId', text);
+        })
+        .then(() => console.log('done'));
+    } else {
+      AsyncStorage.getItem('rooms').then(data => {
+        if (data) {
+          const rooms = JSON.parse(data);
+          const newData = JSON.stringify(
+            rooms.map((room: any) => {
+              if (room.id === currRoom) {
+                return {
+                  id: room.id,
+                  name: text
+                };
+              } else {
+                return room;
+              }
+            })
+          );
+
+          console.log(newData);
+
+          AsyncStorage.setItem('rooms', newData).then(() => {
+            setChangeRooms(!changeRooms);
+            setModalOpen(false);
+          });
+        }
+      });
+    }
   };
 
   return (
@@ -198,7 +215,7 @@ const Main: React.FC = () => {
                   padding: 10,
                   backgroundColor: 'white'
                 }}>
-                <Text>Enter name: </Text>
+                <Text>Enter {modal === 'login' ? 'userID' : 'name'}: </Text>
                 <FormInput
                   label="Save"
                   onSubmit={onSubmit}
