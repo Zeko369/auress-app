@@ -5,7 +5,15 @@ import {View, TextInput, TouchableOpacity, Text} from 'react-native';
 //         label="Join room"
 //         return="go"
 
-const FormInput = ({text, setText, onSubmit, type, label, returnType}) => {
+const FormInput = ({
+  text,
+  setText,
+  onSubmit,
+  type,
+  label,
+  returnType,
+  color
+}) => {
   return (
     <View style={{flexDirection: 'row'}}>
       <TextInput
@@ -14,7 +22,7 @@ const FormInput = ({text, setText, onSubmit, type, label, returnType}) => {
         style={{
           flex: 3,
           margin: 10,
-          color: 'white',
+          color: color ?? 'white',
           fontSize: 20,
           borderRadius: 5,
           padding: 10,

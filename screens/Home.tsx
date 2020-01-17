@@ -3,9 +3,14 @@ import {View, Text, TouchableOpacity, TextInput, Alert} from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
 import Header from '../components/Header';
 import FormInput from '../components/FormInput';
+import Prompt from '../components/Prompt';
 
 interface HomeScreenProps {
   callback: (room: number) => void;
+  changeRooms?: boolean;
+  setCurrRoom: any;
+  setText: any;
+  openModal: any;
 }
 
 interface Room {
@@ -13,7 +18,13 @@ interface Room {
   id: number;
 }
 
-const HomeScreen: React.FC<HomeScreenProps> = ({callback}) => {
+const HomeScreen: React.FC<HomeScreenProps> = ({
+  callback,
+  changeRooms,
+  setCurrRoom,
+  setText,
+  openModal
+}) => {
   const [roomId, setRoomId] = useState<string>('');
   const [rooms, setRooms] = useState<Room[]>([]);
 
@@ -21,6 +32,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({callback}) => {
     AsyncStorage.getItem('rooms').then(data => {
       if (data) {
         const parsed: Room[] = JSON.parse(data);
+        console.log(parsed);
         setRooms(parsed);
       }
     });
@@ -49,6 +61,22 @@ const HomeScreen: React.FC<HomeScreenProps> = ({callback}) => {
     }
   };
 
+  useEffect(() => {
+    console.log('reload rooms');
+    AsyncStorage.getItem('rooms').then(data => {
+      if (data) {
+        const parsed: Room[] = JSON.parse(data);
+        setRooms(parsed);
+      }
+    });
+  }, [changeRooms]);
+
+  const rename = (value: number | string) => () => {
+    setCurrRoom(value);
+    setText(rooms.find(room => room.id === value)?.name ?? '');
+    setTimeout(() => openModal(), 10);
+  };
+
   return (
     <View>
       <FormInput
@@ -61,15 +89,17 @@ const HomeScreen: React.FC<HomeScreenProps> = ({callback}) => {
       />
 
       {rooms.map((room: Room) => (
-        <View
-          key={`room-join-${room.id}`}
-          style={{
-            padding: 20,
-            margin: 10,
-            backgroundColor: '#ddd',
-            borderRadius: 5
-          }}>
-          <TouchableOpacity onPress={submit(room.id)}>
+        <TouchableOpacity
+          onPress={submit(room.id)}
+          onLongPress={rename(room.id)}>
+          <View
+            key={`room-join-${room.id}`}
+            style={{
+              padding: 20,
+              margin: 10,
+              backgroundColor: '#ddd',
+              borderRadius: 5
+            }}>
             {room.name ? (
               <>
                 <Text style={{fontSize: 20, marginBottom: 5}}>{room.name}</Text>
@@ -85,7 +115,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({callback}) => {
               onPress={() => remove(room.id)}
               style={{
                 position: 'absolute',
-                right: 0,
+                right: 10,
                 top: 0,
                 bottom: 0,
                 justifyContent: 'center',
@@ -93,8 +123,8 @@ const HomeScreen: React.FC<HomeScreenProps> = ({callback}) => {
               }}>
               <Text>Delete</Text>
             </TouchableOpacity>
-          </TouchableOpacity>
-        </View>
+          </View>
+        </TouchableOpacity>
       ))}
     </View>
   );

@@ -1,11 +1,19 @@
 import React, {useState, useEffect} from 'react';
-import {SafeAreaView, View, Text, Alert} from 'react-native';
+import {
+  SafeAreaView,
+  View,
+  Text,
+  Alert,
+  StyleSheet,
+  TouchableOpacity
+} from 'react-native';
 
 import {HomeScreen, AnsweringScreen} from './screens';
 import Header, {HeaderProps} from './components/Header';
 import AsyncStorage from '@react-native-community/async-storage';
 import {connect, login, logout} from './foobar';
 import {parse} from './parser';
+import FormInput from './components/FormInput';
 
 enum PAGE {
   HOME,
@@ -20,6 +28,11 @@ const Main: React.FC = () => {
   const [roomId, setRoomId] = useState<number>();
 
   const [config, setConfig] = useState<any>({});
+
+  const [modalOpen, setModalOpen] = useState(false);
+  const [text, setText] = useState('');
+  const [changeRooms, setChangeRooms] = useState(false);
+  const [currRoom, setCurrRoom] = useState('2222');
 
   useEffect(() => {
     AsyncStorage.getItem('userId').then(data => {
@@ -53,6 +66,12 @@ const Main: React.FC = () => {
         Alert.alert('Error', e);
       });
   };
+
+  // useEffect(() => {
+  //   AsyncStorage.setItem('rooms', '[]');
+  // });
+
+  // return <Text>Hello</Text>;
 
   const goBack = () => {
     setPage(PAGE.HOME);
@@ -100,12 +119,49 @@ const Main: React.FC = () => {
           showRight: true
         };
 
+  const opneModal = () => {
+    setModalOpen(true);
+  };
+
+  const onSubmit = () => {
+    AsyncStorage.getItem('rooms').then(data => {
+      if (data) {
+        const rooms = JSON.parse(data);
+        const newData = JSON.stringify(
+          rooms.map((room: any) => {
+            if (room.id === currRoom) {
+              return {
+                id: room.id,
+                name: text
+              };
+            } else {
+              return room;
+            }
+          })
+        );
+
+        console.log(newData);
+
+        AsyncStorage.setItem('rooms', newData).then(() => {
+          setChangeRooms(!changeRooms);
+          setModalOpen(false);
+        });
+      }
+    });
+  };
+
   return (
     <View style={{flex: 1, backgroundColor: '#232323'}}>
-      <SafeAreaView>
+      <SafeAreaView style={{flex: 1}}>
         <Header {...headerData} />
         {page === PAGE.HOME ? (
-          <HomeScreen callback={callback} />
+          <HomeScreen
+            callback={callback}
+            changeRooms={changeRooms}
+            setCurrRoom={setCurrRoom}
+            setText={setText}
+            openModal={opneModal}
+          />
         ) : page === PAGE.ANSWER ? (
           <AnsweringScreen
             connecting={connecting}
@@ -115,6 +171,44 @@ const Main: React.FC = () => {
         ) : (
           <View>
             <Text>Error</Text>
+          </View>
+        )}
+
+        {modalOpen && (
+          <View
+            style={{
+              position: 'absolute',
+              ...StyleSheet.absoluteFillObject,
+              backgroundColor: '#44444488',
+              zIndex: 100
+            }}>
+            <TouchableOpacity
+              style={{
+                position: 'absolute',
+                ...StyleSheet.absoluteFillObject,
+                justifyContent: 'center',
+                alignItems: 'center',
+                zIndex: 100
+              }}
+              onPress={() => setModalOpen(false)}>
+              <View
+                style={{
+                  width: '90%',
+                  borderRadius: 10,
+                  padding: 10,
+                  backgroundColor: 'white'
+                }}>
+                <Text>Enter name: </Text>
+                <FormInput
+                  label="Save"
+                  onSubmit={onSubmit}
+                  text={text}
+                  color={'black'}
+                  returnType={'go'}
+                  setText={setText}
+                />
+              </View>
+            </TouchableOpacity>
           </View>
         )}
       </SafeAreaView>
