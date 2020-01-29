@@ -23,6 +23,8 @@ export const connect = async (roomId: number) => {
   const initResponse = await axios.get(URL);
   const setCookie = initResponse.headers['set-cookie'];
 
+  console.log(setCookie);
+
   if (setCookie === undefined) {
     const body = initResponse.data;
     return {
@@ -35,6 +37,8 @@ export const connect = async (roomId: number) => {
 
     const res = await post(loginData);
     const html = await res.text();
+
+    console.log(res.headers);
 
     return {
       status: 'Created new login',

@@ -1,69 +1,92 @@
-import axios, {AxiosResponse} from 'axios';
+import axios from 'axios';
+import fetch from 'node-fetch';
+import {extractConfig} from './parser';
 
-const url = 'https://www.auress.org/s/';
+const URL = 'https://auress.org/s/';
 
-const extractCookie = (response: AxiosResponse) => {
-  const {headers} = response;
-  const cookie: string = headers['set-cookie'][0];
-
-  return cookie.match(/PHPSESSID=([a-z]|[0-9])+/)[0].slice(10);
+const headers = {
+  'Content-Type': 'application/x-www-form-urlencoded',
+  'User-Agent':
+    'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:71.0) Gecko/20100101 Firefox/71.0'
 };
 
-const generateCookie = (value: string): string => `PHPSESSID=${value}`;
-
-interface Config {
-  id: number;
-  questions: number;
-}
-
-const extractData = (html: string): Config => {
-  const questionRaw = html.match(/<pitanja>[0-9]/)[0].slice('<pitanja>'.length);
-  const questions = parseInt(questionRaw);
-  const idRaw = html.match(/<idSobe>[0-9]*/)[0].slice('<idSobe>'.length);
-  const id = parseInt(idRaw);
-
-  return {
-    id,
-    questions
-  };
-};
-
-const postService = async (data: string, cookie: string) => {
-  return axios.post(url, data, {
+const post = async (body: string, cookie: string) => {
+  return fetch(URL, {
+    method: 'POST',
+    body,
+    // credentials: 'include',
     headers: {
-      cookie: generateCookie(cookie),
-      'Content-Type': 'application/x-www-form-urlencoded',
-      credentials: 'include',
-      'User-Agent':
-        'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:71.0) Gecko/20100101 Firefox/71.0'
+      ...headers,
+      cookie: `PHPSESSID=${cookie}`
     }
   });
 };
 
-const sendShort = async (answer: string, cookie: string) => {
+export const connect = async (roomId: number) => {
+  const initResponse = await axios.get(URL);
+  const setCookie = initResponse.headers['set-cookie'];
+
+  // console.log(setCookie);
+
+  if (setCookie === undefined) {
+    const body = initResponse.data;
+    return {
+      status: 'Already Logged in',
+      raw: body,
+      config: extractConfig(body)
+    };
+  } else {
+    const loginData = `idSobe=${roomId}&udiUSobu=Start%0D%0A`;
+
+    const cookie = setCookie[0].split('PHPSESSID=')[1].split(';')[0];
+
+    const res = await post(loginData, cookie);
+    const html = await res.text();
+
+    // console.log(extractConfig(html));
+
+    const cookie2 = (res.headers as any)
+      .get('set-cookie')
+      .split('PHPSESSID=')[1]
+      .split(';')[0];
+    // console.log(cookie, cookie2);
+
+    return {
+      status: 'Created new login',
+      raw: html,
+      config: extractConfig(html),
+      cookie: cookie2
+    };
+  }
+};
+
+export const sendShort = async (answer: string, cookie: string) => {
   const answerData = `odgovor=${answer.toUpperCase()}&browser=App&device=Apple`;
-  return await postService(answerData, cookie);
+  const res = await post(answerData, cookie);
+  // console.log(res.headers);
+  return await res.text();
 };
 
-const sendText = async (text: string, cookie: string) => {
+export const sendText = async (text: string, cookie: string) => {
   const answerData = `porukaStudenta=${text}&posaljiPoruku=Send+text`;
-  return await postService(answerData, cookie);
+  const res = await post(answerData, cookie);
+  // console.log(res.headers);
+  return await res.text();
 };
 
-const main = async () => {
-  const initResponse = await axios.get(url);
-  const cookie = extractCookie(initResponse);
+setInterval(() => {
+  connect(2222).then(data => {
+    const {cookie, config} = data;
 
-  const loginData = 'idSobe=2013&udiUSobu=Start%0D%0A';
-  const loginResponse = await postService(loginData, cookie);
+    // console.log(config);
 
-  console.log(cookie);
-  console.log(extractData(loginResponse.data));
-
-  await sendShort('A', cookie);
-  return sendText('Foo Bar', cookie);
-};
-
-main()
-  .then(() => console.log('Done'))
-  .catch(e => console.error(e));
+    sendShort(
+      String.fromCharCode(65 + Math.floor(Math.random() * 5)),
+      cookie
+    ).then(data => {
+      console.log(
+        data.split('style="width:90%">Answers:  ')[1].split('</div>')[0]
+      );
+    });
+  });
+}, 500);
