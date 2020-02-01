@@ -1,33 +1,17 @@
 import React, {useState} from 'react';
-import {
-  SafeAreaView,
-  View,
-  Text,
-  TouchableOpacity,
-  TextInput,
-  Keyboard
-} from 'react-native';
+import {View, Text, Keyboard} from 'react-native';
 
 import AnswerButton from '../components/AnswerButton';
 import FormInput from '../components/FormInput';
 import {sendText, sendShort} from '../foobar';
 import {parse} from '../parser';
+import {COLORS} from 'constants/colors';
 
 interface AnsweringScreenProps {
   connecting: boolean;
   config: any;
   setConfig: (data: any) => void;
 }
-
-const COLORS = {
-  A: '#CF0000',
-  B: '#EC7A00',
-  C: '#FCD200',
-  D: '#81C714',
-  E: '#838B8B',
-  F: '#3093c7',
-  G: '#4BA614'
-};
 
 const AnsweringScreen: React.FC<AnsweringScreenProps> = ({
   connecting,
