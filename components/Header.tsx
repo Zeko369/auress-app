@@ -19,25 +19,23 @@ const Header: React.FC<HeaderProps> = ({
   userCallback,
   showRight,
   showCallback
-}) => {
-  return (
-    <View style={styles.container}>
-      <TouchableOpacity onPress={textCallback}>
-        <Text style={styles.text}>{text}</Text>
-      </TouchableOpacity>
-      {showRight && (
-        <View style={styles.right}>
-          <Text style={styles.rightText}>{user}</Text>
-          {showCallback && (
-            <TouchableOpacity onPress={userCallback} style={styles.button}>
-              <Text>{callbackText}</Text>
-            </TouchableOpacity>
-          )}
-        </View>
-      )}
-    </View>
-  );
-};
+}) => (
+  <View style={styles.container}>
+    <TouchableOpacity onPress={textCallback}>
+      <Text style={styles.text}>{text}</Text>
+    </TouchableOpacity>
+    {showRight && (
+      <View style={styles.right}>
+        <Text style={styles.rightText}>{user}</Text>
+        {showCallback && (
+          <TouchableOpacity onPress={userCallback} style={styles.button}>
+            <Text>{callbackText}</Text>
+          </TouchableOpacity>
+        )}
+      </View>
+    )}
+  </View>
+);
 
 export default Header;
 
