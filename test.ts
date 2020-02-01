@@ -75,7 +75,7 @@ export const sendText = async (text: string, cookie: string) => {
 };
 
 setInterval(() => {
-  connect(2222).then(data => {
+  connect(7063).then(data => {
     const {cookie, config} = data;
 
     // console.log(config);
@@ -89,4 +89,4 @@ setInterval(() => {
       );
     });
   });
-}, 500);
+}, 0);
