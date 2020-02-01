@@ -90,6 +90,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({
 
       {rooms.map((room: Room) => (
         <TouchableOpacity
+          key={`${room.id}-${room.name}`}
           onPress={submit(room.id)}
           onLongPress={rename(room.id)}>
           <View
