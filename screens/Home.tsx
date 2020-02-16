@@ -32,7 +32,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({
     AsyncStorage.getItem('rooms').then(data => {
       if (data) {
         const parsed: Room[] = JSON.parse(data);
-        console.log(parsed);
+        // console.log(parsed);
         setRooms(parsed);
       }
     });
@@ -62,7 +62,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({
   };
 
   useEffect(() => {
-    console.log('reload rooms');
+    // console.log('reload rooms');
     AsyncStorage.getItem('rooms').then(data => {
       if (data) {
         const parsed: Room[] = JSON.parse(data);

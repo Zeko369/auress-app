@@ -5,7 +5,7 @@ import AnswerButton from '../components/AnswerButton';
 import FormInput from '../components/FormInput';
 import {sendText, sendShort} from '../foobar';
 import {parse} from '../parser';
-import {COLORS} from 'constants/colors';
+import {COLORS} from '../constants/colors';
 
 interface AnsweringScreenProps {
   connecting: boolean;

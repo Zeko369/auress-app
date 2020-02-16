@@ -138,7 +138,7 @@ const Main: React.FC = () => {
           setModalOpen(false);
           return AsyncStorage.setItem('userId', text);
         })
-        .then(() => console.log('done'));
+        .then(() => console.log('Logged in'));
     } else {
       AsyncStorage.getItem('rooms').then(data => {
         if (data) {
@@ -156,7 +156,7 @@ const Main: React.FC = () => {
             })
           );
 
-          console.log(newData);
+          // console.log(newData);
 
           AsyncStorage.setItem('rooms', newData).then(() => {
             setChangeRooms(!changeRooms);
